@@ -4,7 +4,7 @@
 # LICENSE: https://github.com/markus-perl/ffmpeg-build-script/blob/master/LICENSE
 
 PROGNAME=$(basename "$0")
-FFMPEG_VERSION=5.1
+FFMPEG_VERSION=4.4
 SCRIPT_VERSION=1.39
 CWD=$(pwd)
 PACKAGES="$CWD/packages"
@@ -17,6 +17,8 @@ MACOS_M1=false
 CONFIGURE_OPTIONS=()
 NONFREE_AND_GPL=false
 LATEST=false
+
+export MACOSX_DEPLOYMENT_TARGET=11.0
 
 # Check for Apple Silicon
 if [[ ("$(uname -m)" == "arm64") && ("$OSTYPE" == "darwin"*) ]]; then
@@ -922,9 +924,11 @@ download "https://github.com/FFmpeg/FFmpeg/archive/refs/heads/release/$FFMPEG_VE
 ./configure "${CONFIGURE_OPTIONS[@]}" \
   --disable-debug \
   --disable-doc \
-  --disable-shared \
+  --disable-lzma \
+  --disable-libxcb \
+  --enable-shared \
   --enable-pthreads \
-  --enable-static \
+  --disable-static \
   --enable-small \
   --enable-version3 \
   --extra-cflags="${CFLAGS}" \
